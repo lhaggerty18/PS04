@@ -18,7 +18,7 @@ set.seed(76)
 
 # Collaboration
 
-Please indicate who you collaborated with on this assignment:
+Please indicate who you collaborated with on this assignment: Leonard helped me with a couple coding questions I had. Jeff helped me with interpreting the Graphs.
 
 
 # Load packages, data, model formulas
@@ -170,6 +170,7 @@ ggplot(results, aes(x=num_coefficients, y=RMSE, col=type)) +
 
 Compare and contrast the two curves and hypothesize as to the root cause of any differences.
 
+As the number of coefficients increase, the RMSE of the training set will continually decrease, as we will be continually overfitting the data. When we apply the models to the Test set, the RMSE will at a certain point start to increase because the overfitting will start to include too much of the "noise" of the dataset compared to the signal.
 
 
 # Bonus
@@ -178,6 +179,121 @@ Repeat the whole process, but let `credit_train` be a random sample of size 380
 from `credit` instead of 20. Now compare and contrast this graph with the
 one above and hypothesize as to the root cause of any differences.
 
-```{r, echo=FALSE}
+Code ommitted because it is nearly identical to above code.
 
+```{r, echo=FALSE}
+credit_train_b <- credit %>% 
+  sample_n(380)
+credit_test_b <- credit %>% 
+  anti_join(credit_train_b, by="ID")
 ```
+
+```{r, echo=FALSE}
+RMSE_train_b <- runif(n=7)
+RMSE_test_b <- runif(n=7)
+```
+
+
+```{r, warning = FALSE, echo = FALSE}
+model_lm1_b <- lm(model1_formula, data=credit_train_b)
+model_lm2_b <- lm(model2_formula, data=credit_train_b)
+model_lm3_b <- lm(model3_formula, data=credit_train_b)
+model_lm4_b <- lm(model4_formula, data=credit_train_b)
+model_lm5_b <- lm(model5_formula, data=credit_train_b)
+model_lm6_b <- lm(model6_formula, data=credit_train_b)
+model_lm7_b <- lm(model7_formula, data=credit_train_b)
+
+sm1b <-summary(model_lm1_b)
+rmse1b <- sqrt(mean(sm1b$residuals^2))
+RMSE_train_b[1] <- rmse1b
+
+sm2b <-summary(model_lm2_b)
+rmse2b <- sqrt(mean(sm2b$residuals^2))
+RMSE_train_b[2] <- rmse2b
+
+sm3b <-summary(model_lm3_b)
+rmse3b <- sqrt(mean(sm3b$residuals^2))
+RMSE_train_b[3] <- rmse3b
+
+sm4b <-summary(model_lm4_b)
+rmse4b <- sqrt(mean(sm4b$residuals^2))
+RMSE_train_b[4] <- rmse4b
+
+sm5b <-summary(model_lm5_b)
+rmse5b <- sqrt(mean(sm5b$residuals^2))
+RMSE_train_b[5] <- rmse5b
+
+sm6b <-summary(model_lm6_b)
+rmse6b <- sqrt(mean(sm6b$residuals^2))
+RMSE_train_b[6] <- rmse6b
+
+sm7b <-summary(model_lm7_b)
+rmse7b <- sqrt(mean(sm7b$residuals^2))
+RMSE_train_b[7] <- rmse7b
+
+prediction1_b <- model_lm1_b %>% 
+    broom::augment(newdata=credit_test_b) 
+
+rmse1_test_b <- sqrt(mean((prediction1_b$Balance-prediction1_b$.fitted)^2))
+RMSE_test_b[1] <- rmse1_test_b
+
+prediction2_b <-model_lm2_b %>% 
+    broom::augment(newdata=credit_test_b) 
+
+rmse2_test_b <- sqrt(mean((prediction2_b$Balance-prediction2_b$.fitted)^2))
+RMSE_test_b[2] <- rmse2_test_b
+
+prediction3_b <- model_lm3_b %>% 
+    broom::augment(newdata=credit_test_b)
+
+rmse3_test_b <- sqrt(mean((prediction3_b$Balance-prediction3_b$.fitted)^2))
+RMSE_test_b[3] <- rmse3_test_b
+
+prediction4_b <- model_lm4_b %>% 
+    broom::augment(newdata=credit_test_b)
+
+rmse4_test_b <- sqrt(mean((prediction4_b$Balance-prediction4_b$.fitted)^2))
+RMSE_test_b[4] <- rmse4_test_b
+
+prediction5_b <- model_lm5_b %>% 
+    broom::augment(newdata=credit_test_b)
+
+rmse5_test_b <- sqrt(mean((prediction5_b$Balance-prediction5_b$.fitted)^2))
+RMSE_test_b[5] <- rmse5_test_b
+
+prediction6_b <-model_lm6_b %>% 
+    broom::augment(newdata=credit_test_b)
+
+rmse6_test_b <- sqrt(mean((prediction6_b$Balance-prediction6_b$.fitted)^2))
+RMSE_test_b[6] <- rmse6_test_b
+
+prediction7_b <- model_lm7_b %>% 
+    broom::augment(newdata=credit_test_b)
+
+rmse7_test_b <- sqrt(mean((prediction7_b$Balance-prediction7_b$.fitted)^2))
+RMSE_test_b[7] <- rmse7_test_b
+
+# Save results in a data frame. Note this data frame is in wide format.
+results_b <- data_frame(
+  num_coefficients = 1:7,
+  RMSE_train_b,
+  RMSE_test_b
+) 
+
+# Some cleaning of results
+results_b <- results_b %>% 
+  # More intuitive names:
+  rename(
+    `Training data_b` = RMSE_train_b,
+    `Test data_b` = RMSE_test_b
+  ) %>% 
+  # Convert results data frame to "tidy" data format i.e. long format, so that we
+  # can ggplot it
+  gather(type, RMSE, -num_coefficients)
+
+ggplot(results_b, aes(x=num_coefficients, y=RMSE, col=type)) +
+  geom_line() + 
+  labs(x="# of coefficients", y="RMSE", col="Data used to evaluate \nperformance of fitted model")
+```
+
+Because the training set is so much larger compared to the test set, the model is actually underfitted. 
