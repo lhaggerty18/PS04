@@ -64,7 +64,83 @@ RMSE_test <- runif(n=7)
 
 
 # Do your work here:
+model_lm1 <- lm(model1_formula, data=credit_train)
+model_lm2 <- lm(model2_formula, data=credit_train)
+model_lm3 <- lm(model3_formula, data=credit_train)
+model_lm4 <- lm(model4_formula, data=credit_train)
+model_lm5 <- lm(model5_formula, data=credit_train)
+model_lm6 <- lm(model6_formula, data=credit_train)
+model_lm7 <- lm(model7_formula, data=credit_train)
 
+sm1 <-summary(model_lm1)
+rmse1 <- sqrt(mean(sm1$residuals^2))
+RMSE_train[1] <- rmse1
+
+sm2 <-summary(model_lm2)
+rmse2 <- sqrt(mean(sm2$residuals^2))
+RMSE_train[2] <- rmse2
+
+sm3 <-summary(model_lm3)
+rmse3 <- sqrt(mean(sm3$residuals^2))
+RMSE_train[3] <- rmse3
+
+sm4 <-summary(model_lm4)
+rmse4 <- sqrt(mean(sm4$residuals^2))
+RMSE_train[4] <- rmse4
+
+sm5 <-summary(model_lm5)
+rmse5 <- sqrt(mean(sm5$residuals^2))
+RMSE_train[5] <- rmse5
+
+sm6 <-summary(model_lm6)
+rmse6 <- sqrt(mean(sm6$residuals^2))
+RMSE_train[6] <- rmse6
+
+sm7 <-summary(model_lm7)
+rmse7 <- sqrt(mean(sm7$residuals^2))
+RMSE_train[7] <- rmse7
+
+prediction1 <- model_lm1 %>% 
+    broom::augment(newdata=credit_test) 
+
+rmse1_test <- sqrt(mean((prediction1$Balance-prediction1$.fitted)^2))
+RMSE_test[1] <- rmse1_test
+
+prediction2 <-model_lm2 %>% 
+    broom::augment(newdata=credit_test) 
+
+rmse2_test <- sqrt(mean((prediction2$Balance-prediction2$.fitted)^2))
+RMSE_test[2] <- rmse2_test
+
+prediction3 <- model_lm3 %>% 
+    broom::augment(newdata=credit_test)
+
+rmse3_test <- sqrt(mean((prediction3$Balance-prediction3$.fitted)^2))
+RMSE_test[3] <- rmse3_test
+
+prediction4 <- model_lm4 %>% 
+    broom::augment(newdata=credit_test)
+
+rmse4_test <- sqrt(mean((prediction4$Balance-prediction4$.fitted)^2))
+RMSE_test[4] <- rmse4_test
+
+prediction5 <- model_lm5 %>% 
+    broom::augment(newdata=credit_test)
+
+rmse5_test <- sqrt(mean((prediction5$Balance-prediction5$.fitted)^2))
+RMSE_test[5] <- rmse5_test
+
+prediction6 <-model_lm6 %>% 
+    broom::augment(newdata=credit_test)
+
+rmse6_test <- sqrt(mean((prediction6$Balance-prediction6$.fitted)^2))
+RMSE_test[6] <- rmse6_test
+
+prediction7 <- model_lm7 %>% 
+    broom::augment(newdata=credit_test)
+
+rmse7_test <- sqrt(mean((prediction7$Balance-prediction7$.fitted)^2))
+RMSE_test[7] <- rmse7_test
 
 # Save results in a data frame. Note this data frame is in wide format.
 results <- data_frame(
